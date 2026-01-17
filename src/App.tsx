@@ -19,24 +19,27 @@ import {
 
 function Nav() {
   return (
-    <nav className="sm:px-6 pb-1 lg:pt-6 lg:px-12 w-full rounded-xl">
+    <nav
+      className="sm:px-6 pb-1 lg:pt-6 lg:px-12 w-full rounded-xl"
+      aria-label="Primary"
+    >
       <div className="w-full  flex items-center px-1.5 justify-center h-10">
-        <ButtonGroup className="w-full flex">
-          <ButtonGroup className="hidden sm:flex">
+        <ButtonGroup className="w-full flex" aria-label="Navigation bar">
+          <ButtonGroup className="hidden sm:flex" aria-label="Back navigation">
             <Button variant="outline" size="icon" aria-label="Go Back">
-              <IconArrowLeft />
+              <IconArrowLeft aria-hidden="true" />
             </Button>
           </ButtonGroup>
-          <ButtonGroup>
+          <ButtonGroup aria-label="Sections">
             <Button variant="outline">Scheduled inspection</Button>
-            <Button variant="outline" className="bg-input">
+            <Button variant="outline" className="bg-input" aria-current="page">
               Introduction
             </Button>
             <Button variant="outline">Changes</Button>
           </ButtonGroup>
-          <ButtonGroup className="ml-auto">
+          <ButtonGroup className="ml-auto" aria-label="User actions">
             <Button variant="outline">
-              <IconUser /> Me
+              <IconUser aria-hidden="true" /> Me
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger
@@ -46,7 +49,7 @@ function Nav() {
                     size="icon"
                     aria-label="More Options"
                   >
-                    <IconDots />
+                    <IconDots aria-hidden="true" />
                   </Button>
                 }
                 className="ml-auto"
@@ -54,14 +57,14 @@ function Nav() {
               <DropdownMenuContent align="end" className="w-52">
                 <DropdownMenuGroup>
                   <DropdownMenuItem>
-                    <IconSettings />
+                    <IconSettings aria-hidden="true" />
                     Settings
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                   <DropdownMenuItem variant="destructive">
-                    <IconLogout />
+                    <IconLogout aria-hidden="true" />
                     Logout
                   </DropdownMenuItem>
                 </DropdownMenuGroup>

@@ -6,7 +6,13 @@ import { Example } from "@/components/example";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { TableBody, TableCell, TableRow } from "@/components/ui/table";
+import {
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { data } from "@/data";
 import {
   ResizableHandle,
@@ -47,6 +53,8 @@ export function DataTableExample() {
   const [columnSizes, setColumnSizes] = React.useState<number[]>(
     columns.map((column) => column.defaultSize),
   );
+  const tableSummaryId = React.useId();
+  const pageJumpInputId = React.useId();
 
   const collator = React.useMemo(
     () => new Intl.Collator("en", { numeric: true, sensitivity: "base" }),
@@ -250,6 +258,14 @@ export function DataTableExample() {
     }
   };
 
+  const getAriaSort = (
+    column: (typeof columns)[number],
+  ): React.AriaAttributes["aria-sort"] | undefined => {
+    if (!isSortableColumn(column)) return undefined;
+    if (sortKey !== column.key) return "none";
+    return sortDirection === "asc" ? "ascending" : "descending";
+  };
+
   return (
     <Example
       title="Test task"
@@ -264,10 +280,11 @@ export function DataTableExample() {
                 htmlFor="main-schema-search"
                 className="text-muted-foreground gap-1 flex items-center text-xs font-medium"
               >
-                Text search <IconSearch className="size-3" />
+                Text search <IconSearch className="size-3" aria-hidden="true" />
               </label>
               <Input
                 id="main-schema-search"
+                type="search"
                 placeholder="Search by id, summary, owner, account"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
@@ -329,7 +346,14 @@ export function DataTableExample() {
                 </React.Fragment>
               ))}
             </ResizablePanelGroup>
-            <table className="w-full  table-fixed caption-bottom text-xs">
+            <table
+              className="w-full table-fixed caption-bottom text-xs"
+              aria-label="Work items"
+              aria-describedby={tableSummaryId}
+            >
+              <caption className="sr-only">
+                Work items table with filters, sorting, and pagination.
+              </caption>
               <colgroup>
                 {columns.map((column, index) => (
                   <col
@@ -339,6 +363,19 @@ export function DataTableExample() {
                   />
                 ))}
               </colgroup>
+              <TableHeader className="sr-only">
+                <TableRow>
+                  {columns.map((column) => (
+                    <TableHead
+                      key={column.key}
+                      scope="col"
+                      aria-sort={getAriaSort(column)}
+                    >
+                      {column.label}
+                    </TableHead>
+                  ))}
+                </TableRow>
+              </TableHeader>
               <TableBody>
                 {paginatedRows.length === 0 ? (
                   <TableRow>
@@ -365,15 +402,21 @@ export function DataTableExample() {
           </div>
         </div>
 
-        <div className="mt-auto  flex w-full flex-col gap-2 text-muted-foreground">
+        <div className="mt-auto flex w-full flex-col gap-2 text-muted-foreground">
           <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
-            <span>{captionParts.join(" ")}</span>
+            <span id={tableSummaryId} role="status" aria-live="polite">
+              {captionParts.join(" ")}
+            </span>
 
-            <div className="flex flex-wrap items-center gap-3">
+            <nav
+              className="flex flex-wrap items-center gap-3"
+              aria-label="Table pagination"
+            >
               <Button
                 type="button"
                 variant="outline"
                 size="xs"
+                aria-label="Previous page"
                 onClick={() => setPage((current) => Math.max(1, current - 1))}
                 disabled={page <= 1}
               >
@@ -395,6 +438,7 @@ export function DataTableExample() {
                       variant={item === page ? "secondary" : "outline"}
                       size="xs"
                       aria-current={item === page ? "page" : undefined}
+                      aria-label={`Page ${item}`}
                       onClick={() => setPage(item)}
                       className="px-1.5"
                     >
@@ -407,6 +451,7 @@ export function DataTableExample() {
                 type="button"
                 variant="outline"
                 size="xs"
+                aria-label="Next page"
                 onClick={() =>
                   setPage((current) => Math.min(totalPages, current + 1))
                 }
@@ -415,8 +460,9 @@ export function DataTableExample() {
                 Next
               </Button>
               <div className="flex items-center gap-1">
-                <span>Jump to</span>
+                <label htmlFor={pageJumpInputId}>Jump to page</label>
                 <Input
+                  id={pageJumpInputId}
                   type="number"
                   min={1}
                   max={totalPages}
@@ -434,12 +480,13 @@ export function DataTableExample() {
                   type="button"
                   variant="outline"
                   size="xs"
+                  aria-label="Go to page"
                   onClick={handleJumpToPage}
                 >
                   Go
                 </Button>
               </div>
-            </div>
+            </nav>
           </div>
         </div>
       </div>

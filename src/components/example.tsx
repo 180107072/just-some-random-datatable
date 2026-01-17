@@ -7,9 +7,9 @@ import {
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
 
-function ExampleWrapper({ className, ...props }: React.ComponentProps<"div">) {
+function ExampleWrapper({ className, ...props }: React.ComponentProps<"main">) {
   return (
-    <div
+    <main
       data-slot="example-wrapper"
       className={cn(
         "mx-auto flex flex-1 w-full overflow-hidden min-w-0 content-center items-start gap-8 px-4 sm:gap-12 sm:px-6 md:grid-cols-2 md:gap-8 lg:px-12 lg:pb-12",
@@ -38,28 +38,34 @@ function Example({
         "mx-auto flex w-full flex-1 min-w-0 flex-col gap-1 self-stretch",
         containerClassName,
       )}
+      role="region"
+      aria-label={title}
       {...props}
     >
-      <div className="text-muted-foreground flex items-center gap-2 px-1.5 py-2 text-xs font-medium">
-        {title}
+      <header className="text-muted-foreground flex items-center gap-2 px-1.5 py-2 text-xs font-medium">
+        <h2 className="text-xs font-medium">{title}</h2>
 
-        <div className="flex gap-1.5 w-fit rounded-2xl">
+        <div
+          className="flex gap-1.5 w-fit rounded-2xl"
+          role="group"
+          aria-label={`${title} actions`}
+        >
           <Separator orientation="vertical" />
           <Button variant="ghost">
-            <IconPencilPlus className="size-4" />
+            <IconPencilPlus className="size-4" aria-hidden="true" />
             Create request
           </Button>
           <Button variant="ghost">
-            <IconDownload className="size-4" />
+            <IconDownload className="size-4" aria-hidden="true" />
             Download request
           </Button>
           <Separator orientation="vertical" />
           <Button variant="ghost">
-            <IconMaximize className="size-4" />
+            <IconMaximize className="size-4" aria-hidden="true" />
             Maximize
           </Button>
         </div>
-      </div>
+      </header>
       <div
         data-slot="example-content"
         className={cn(
